@@ -1,6 +1,9 @@
 NAME ?= hello-world-kubernetes
 INSTANCE ?= hello-world-kubernetes-instance
 PORT ?= 43567
+VERSION-0 ?= 1.0.0
+VERSION-1 ?= 1.0.1
+VERSION-2 ?= 1.0.2
 
 install:
 	npm install
@@ -34,5 +37,32 @@ test-kill:
 
 clean:
 	rm -rf node_modules
+
+build-0:
+	node ./version.js $(VERSION-0)
+	docker build -t $(NAME):$(VERSION-0) .
+
+build-1:
+	node ./version.js $(VERSION-1)
+	docker build -t $(NAME):$(VERSION-1) .
+	node ./version.js $(VERSION-0)
+
+build-2:
+	node ./version.js $(VERSION-2)
+	docker build -t $(NAME):$(VERSION-2) .
+	node ./version.js $(VERSION-0)
+
+build-all: build-0 build-1 build-2
+	docker images $(NAME)
+
+#Spin up the Pod using container defaults
+demo-0:
+
+#Spin up the Pod overridding env variables explicitly
+demo-1:
+
+#Spin up the Pod overridding env variables pointing to configmap and secrets. Also configure configmap and secrets as volume mounts
+demo-2:
+
 
 .PHONY: install build run test clean
