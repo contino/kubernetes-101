@@ -10,6 +10,7 @@ const os = require('os');
 const HOSTNAME = os.hostname();
 const PORT = process.env.PORT || 8080;
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
+const READINESS_TIMEOUT = process.env.READINESS_TIMEOUT || 1000;
 
 // App
 const app = express();
@@ -101,6 +102,12 @@ app.listen(PORT, () => {
     // Here you get the error when the file was not found,
     // but you also get any other error
   }
+
+  setTimeout(function() {
+    fs.writeFile('./ready', 'alive!', 'utf8', function (err) {
+      logger.info(`App is ready after delay of ${READINESS_TIMEOUT}ms!`);
+    });
+  }, READINESS_TIMEOUT);
 
   logger.info(`Example app listening on port ${PORT}!`);
 })

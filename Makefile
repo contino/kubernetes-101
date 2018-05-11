@@ -1,6 +1,7 @@
 NAME ?= hello-world-kubernetes
 INSTANCE ?= hello-world-kubernetes-instance
-PORT ?= 43567
+CONTAINER-EXPOSED-PORT ?= 8080
+PROXY-PORT ?= 43567
 VERSION-0 ?= 1.0.0
 VERSION-1 ?= 1.0.1
 VERSION-2 ?= 1.0.2
@@ -15,7 +16,7 @@ run: build
 	docker run -it --rm --entrypoint /bin/bash $(NAME) 
 
 start: build
-	docker run -i -t --name $(INSTANCE) -p $(PORT):8080 -d $(NAME)
+	docker run -i -t --name $(INSTANCE) -p $(PROXY-PORT):$(CONTAINER-EXPOSED-PORT) -d $(NAME)
 
 log:
 	docker logs $(INSTANCE)
@@ -27,13 +28,13 @@ stop:
 	docker stop $(INSTANCE) && docker rm $(INSTANCE)
 
 test:
-	curl http://localhost:$(PORT)/
+	curl http://localhost:$(PROXY-PORT)/
 
 test-health:
-	curl http://localhost:$(PORT)/healthz
+	curl http://localhost:$(PROXY-PORT)/healthz
 
 test-kill:
-	curl http://localhost:$(PORT)/kill
+	curl http://localhost:$(PROXY-PORT)/kill
 
 clean:
 	rm -rf node_modules
@@ -55,8 +56,17 @@ build-2:
 build-all: build-0 build-1 build-2
 	docker images $(NAME)
 
-#Spin up the Pod using container defaults
-demo-0:
+#Cleanup any leftovers so we can try demo again
+demo-cleanup: stop
+
+#Create a deployment
+demo-1:
+	kubectl apply -f ./kubernetes/1-deployment.yml
+
+#Create a service
+demo-2:
+	kubectl apply -f ./kubernetes/2-service.yml
+
 
 #Spin up the Pod overridding env variables explicitly
 demo-1:

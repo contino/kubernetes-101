@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hello-world-kubernetes
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: hello-world-kubernetes
+    spec:
+      containers:
+      - name: hello-world-kubernetes
+        image: hello-world-kubernetes:1.0.0

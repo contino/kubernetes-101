@@ -11,9 +11,6 @@ fs.readFile(filePath, 'utf8', function (err,data) {
 
   var result = data.replace(find, replacement);
 
-  //var test = data.replace(new RegExp('\\"version\\"', 'g'), replacement);
-  //console.log(test)
-
   fs.writeFile(filePath, result, 'utf8', function (err) {
      if (err) return console.log(err);
   });

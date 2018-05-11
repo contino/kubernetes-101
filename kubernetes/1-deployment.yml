@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hello-world-kubernetes
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: hello-world-kubernetes
+    spec:
+      containers:
+      - name: hello-world-kubernetes
+        image: hello-world-kubernetes:1.0.0
+        ports:
+        - name: http
+          containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /usr/src/app/ready
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
