@@ -1,7 +1,7 @@
 NAME ?= hello-world-kubernetes
 INSTANCE ?= hello-world-kubernetes-instance
 CONTAINER-EXPOSED-PORT ?= 8080
-PROXY-PORT ?= 43567
+PROXY-PORT ?= 32500
 VERSION-0 ?= 1.0.0
 VERSION-1 ?= 1.0.1
 VERSION-2 ?= 1.0.2
