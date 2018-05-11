@@ -2,15 +2,18 @@
 
 // Constants
 const express = require('express');
-const logger = require('winston')
-const callbackToPromise = require('promise-callback')
+const logger = require('winston');
+const callbackToPromise = require('promise-callback');
 const fs = require('fs');
+const os = require('os');
 
+const HOSTNAME = os.hostname();
 const PORT = process.env.PORT || 8080;
-const LOG_LEVEL = process.env.LOG_LEVEL || 'info'
+const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 
 // App
 const app = express();
+
 var hasFailure=false;
 var packageVersion;
 var startupConfig;
@@ -18,15 +21,15 @@ var startupSecret;
 
 app.get('/', function (req, res) {
   if (packageVersion == '1.0.1' || hasFailure) {
-    res.sendStatus(500)
+    res.sendStatus(500);
   } else {
-    var envConfig = process.env.ENV_CONFIG
-    var envSecret = process.env.ENV_SECRET
+    var envConfig = process.env.ENV_CONFIG;
+    var envSecret = process.env.ENV_SECRET;
 
     var runtimeConfig;
     try {
       var fileContents = fs.readFileSync('./config/config.json');
-      runtimeConfig = JSON.parse(fileContents).configValue
+      runtimeConfig = JSON.parse(fileContents).configValue;
     } catch (err) {
       // Here you get the error when the file was not found,
       // but you also get any other error
@@ -35,12 +38,13 @@ app.get('/', function (req, res) {
     var runtimeSecret;
     try {
       var fileContents = fs.readFileSync('./secret/secret.json');
-      runtimeSecret = JSON.parse(fileContents).secretValue
+      runtimeSecret = JSON.parse(fileContents).secretValue;
     } catch (err) {
       // Here you get the error when the file was not found,
       // but you also get any other error
     }
 
+    res.write(`hostname = ${HOSTNAME}\n`);
     res.write(`packageVersion = ${packageVersion}\n`);
     res.write(`envConfig = ${envConfig}\n`);
     res.write(`envSecret = ${envSecret}\n`);
@@ -54,11 +58,11 @@ app.get('/', function (req, res) {
 
 app.get('/kill', function (req, res) {
   if (packageVersion == '1.0.1' || hasFailure) {
-    res.sendStatus(500)
+    res.sendStatus(500);
   } else {
     hasFailure=true;
     res.send('Killing server\n');
-    logger.info('Killing server')
+    logger.info('Killing server');
   }
 });
 
@@ -66,9 +70,9 @@ app.get('/kill', function (req, res) {
 app.get('/healthz', (req, res, next) => {
 
   if (packageVersion == '1.0.1' || hasFailure) {
-    res.sendStatus(500)
+    res.sendStatus(500);
   } else {
-    res.sendStatus(200)
+    res.sendStatus(200);
   }
 })
 
@@ -76,7 +80,7 @@ app.get('/healthz', (req, res, next) => {
 app.listen(PORT, () => {
   try {
      var fileContents = fs.readFileSync('./package.json');
-     packageVersion = JSON.parse(fileContents).version
+     packageVersion = JSON.parse(fileContents).version;
   } catch (err) {
     // Here you get the error when the file was not found,
     // but you also get any other error
@@ -84,7 +88,7 @@ app.listen(PORT, () => {
 
   try {
     var fileContents = fs.readFileSync('./config/config.json');
-    startupConfig = JSON.parse(fileContents).configValue
+    startupConfig = JSON.parse(fileContents).configValue;
   } catch (err) {
     // Here you get the error when the file was not found,
     // but you also get any other error
@@ -92,28 +96,28 @@ app.listen(PORT, () => {
 
   try {
     var fileContents = fs.readFileSync('./secret/secret.json');
-    startupSecret = JSON.parse(fileContents).secretValue
+    startupSecret = JSON.parse(fileContents).secretValue;
   } catch (err) {
     // Here you get the error when the file was not found,
     // but you also get any other error
   }
 
-  logger.info(`Example app listening on port ${PORT}!`)
+  logger.info(`Example app listening on port ${PORT}!`);
 })
 
 // graceful shutdown
 process.on('SIGTERM', () => {
-  logger.info('SIGTERM signal received')
+  logger.info('SIGTERM signal received');
 
   // close server first
   callbackToPromise(app.close)
     // exit process
     .then(() => {
-      logger.info('Succesfull graceful shutdown')
-      process.exit(0)
+      logger.info('Succesfull graceful shutdown');
+      process.exit(0);
     })
     .catch((err) => {
-      logger.error('Server close')
-      process.exit(-1)
+      logger.error('Server close');
+      process.exit(-1);
     })
 })
