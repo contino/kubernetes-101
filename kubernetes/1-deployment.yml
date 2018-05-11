@@ -26,7 +26,7 @@ spec:
         readinessProbe:
           exec:
             command:
-            - cat
-            - /usr/src/app/ready
+            - /bin/ls 
+            - /tmp/ready
           initialDelaySeconds: 5
           timeoutSeconds: 1

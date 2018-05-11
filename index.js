@@ -104,7 +104,7 @@ app.listen(PORT, () => {
   }
 
   setTimeout(function() {
-    fs.writeFile('./ready', 'alive!', 'utf8', function (err) {
+    fs.writeFile('/tmp/ready', 'alive!', 'utf8', function (err) {
       logger.info(`App is ready after delay of ${READINESS_TIMEOUT}ms!`);
     });
   }, READINESS_TIMEOUT);
