@@ -63,7 +63,11 @@ build-all: build-0 build-1 build-2
 	docker images $(NAME)
 
 #Cleanup any leftovers so we can try demo again
-demo-cleanup: stop
+demo-cleanup:
+	kubectl delete deployments -l name=hello-world-kubernetes-deployment
+	kubectl delete services -l name=hello-world-kubernetes-service
+	kubectl delete secret -l name=hello-world-kubernetes-secret
+	kubectl delete configmap -l name=hello-world-kubernetes-configmap
 
 #Create a deployment
 demo-1:
