@@ -15,7 +15,7 @@ const READINESS_TIMEOUT = process.env.READINESS_TIMEOUT || 1000;
 
 // App
 const app = express();
-
+var largeMemoryChunk;
 var hasFailure=false;
 var packageVersion;
 var startupConfig;
@@ -109,9 +109,28 @@ app.get('/kill', function (req, res) {
   }
 });
 
+app.get('/small-leak', function (req, res) {
+  if (packageVersion == '1.0.1' || hasFailure) {
+    res.sendStatus(500);
+  } else {
+    largeMemoryChunk=(new Array(67108864)).join('*');
+    res.send('Leaking memory\n');
+    logger.info('Leaking memory');
+  }
+});
+
+app.get('/big-leak', function (req, res) {
+  if (packageVersion == '1.0.1' || hasFailure) {
+    res.sendStatus(500);
+  } else {
+    largeMemoryChunk=(new Array(100663296)).join('*');
+    res.send('Leaking memory\n');
+    logger.info('Leaking memory');
+  }
+});
+
 // health check
 app.get('/healthz', (req, res, next) => {
-
   if (packageVersion == '1.0.1' || hasFailure) {
     res.sendStatus(500);
   } else {

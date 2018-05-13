@@ -36,6 +36,12 @@ test-health:
 test-kill:
 	curl http://localhost:$(PROXY-PORT)/kill
 
+test-small-leak:
+	curl http://localhost:$(PROXY-PORT)/small-leak
+
+test-big-leak:
+	curl http://localhost:$(PROXY-PORT)/big-leak
+
 clean:
 	rm -rf node_modules
 
