@@ -1,13 +1,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: hello-world-kubernetes
+  name: hello-world-kubernetes-deployment
 spec:
+  selector:
+    matchLabels:
+      app: hello-world-kubernetes
   replicas: 1
   template:
     metadata:
       labels:
-        name: hello-world-kubernetes
+        app: hello-world-kubernetes
     spec:
       containers:
       - name: hello-world-kubernetes-pod
@@ -30,3 +33,10 @@ spec:
             - /tmp/ready
           initialDelaySeconds: 5
           timeoutSeconds: 1
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "500m"
+          requests:
+            memory: "32Mi"
+            cpu: "250m"

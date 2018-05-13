@@ -39,7 +39,12 @@ spec:
             cpu: "500m"
           requests:
             memory: "32Mi"
-            cpu: "250m"
+            cpu: "250m"          
+        env:
+        - name: ENV_CONFIG
+          value: 2nd env config
+        - name: ENV_SECRET
+          value: 2nd env secret
 ---
 apiVersion: v1
 kind: Service

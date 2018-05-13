@@ -67,12 +67,16 @@ demo-1:
 demo-2:
 	kubectl apply -f ./kubernetes/2-service.yml
 
-
 #Spin up the Pod overridding env variables explicitly
-demo-1:
+demo-3:
+	kubectl apply -f ./kubernetes/3-env-explicit.yml
 
 #Spin up the Pod overridding env variables pointing to configmap and secrets. Also configure configmap and secrets as volume mounts
-demo-2:
+demo-4:
+	kubectl apply -f ./kubernetes/4-configmaps-and-secrets.yml
 
+#Change configmap and secret which shows runtime configuration
+demo-5:
+	kubectl apply -f ./kubernetes/5-configmaps-and-secrets-runtime-configuration.yml
 
 .PHONY: install build run test clean

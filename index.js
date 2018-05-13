@@ -6,6 +6,7 @@ const logger = require('winston');
 const callbackToPromise = require('promise-callback');
 const fs = require('fs');
 const os = require('os');
+const util = require('util');
 
 const HOSTNAME = os.hostname();
 const PORT = process.env.PORT || 8080;
@@ -20,6 +21,15 @@ var packageVersion;
 var startupConfig;
 var startupSecret;
 
+function formatBytes(bytes,decimals) {
+  if(bytes == 0) return '0 Bytes';
+  var k = 1024,
+      dm = decimals || 2,
+      sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 app.get('/', function (req, res) {
   if (packageVersion == '1.0.1' || hasFailure) {
     res.sendStatus(500);
@@ -29,8 +39,8 @@ app.get('/', function (req, res) {
 
     var runtimeConfig;
     try {
-      var fileContents = fs.readFileSync('./config/config.json');
-      runtimeConfig = JSON.parse(fileContents).configValue;
+      var fileContents = fs.readFileSync('./configmap/configmap.json');
+      runtimeConfig = fileContents;
     } catch (err) {
       // Here you get the error when the file was not found,
       // but you also get any other error
@@ -39,20 +49,52 @@ app.get('/', function (req, res) {
     var runtimeSecret;
     try {
       var fileContents = fs.readFileSync('./secret/secret.json');
-      runtimeSecret = JSON.parse(fileContents).secretValue;
+      runtimeSecret = fileContents;
     } catch (err) {
       // Here you get the error when the file was not found,
       // but you also get any other error
     }
 
+    var containerMemoryUsage;
+    try {
+      var fileContents = fs.readFileSync('/sys/fs/cgroup/memory/memory.usage_in_bytes');
+      containerMemoryUsage = fileContents;
+    } catch (err) {
+      // Here you get the error when the file was not found,
+      // but you also get any other error
+    }
+
+    var containerMemoryLimit;
+    try {
+      var fileContents = fs.readFileSync('/sys/fs/cgroup/memory/memory.limit_in_bytes');
+      containerMemoryLimit = fileContents;
+    } catch (err) {
+      // Here you get the error when the file was not found,
+      // but you also get any other error
+    }
+
+    var hostTotalMem = os.totalmem();
+    var hostFreeMem = os.freemem();
+    var memoryUsage = process.memoryUsage()
+
     res.write(`hostname = ${HOSTNAME}\n`);
     res.write(`packageVersion = ${packageVersion}\n`);
+    res.write(`*************Configuration******\n`);
     res.write(`envConfig = ${envConfig}\n`);
     res.write(`envSecret = ${envSecret}\n`);
     res.write(`startupConfig = ${startupConfig}\n`);
     res.write(`startupSecret = ${startupSecret}\n`);
     res.write(`runtimeConfig = ${runtimeConfig}\n`);
     res.write(`runtimeSecret = ${runtimeSecret}\n`);
+    res.write(`**************Memory************\n`);
+    res.write(`Host totalMem = ${formatBytes(hostTotalMem)}\n`);
+    res.write(`Host freeMem = ${formatBytes(hostFreeMem)}\n`);
+    res.write(`Container usage = ${formatBytes(containerMemoryUsage)}\n`);
+    res.write(`Container limit = ${formatBytes(containerMemoryLimit)}\n`);
+    res.write(`rss = ${formatBytes(memoryUsage.rss)}\n`);
+    res.write(`heapTotal = ${formatBytes(memoryUsage.heapTotal)}\n`);
+    res.write(`heapUsed = ${formatBytes(memoryUsage.heapUsed)}\n`);
+    
     res.end(`\n`);
   }
 });
@@ -88,8 +130,8 @@ app.listen(PORT, () => {
   }  
 
   try {
-    var fileContents = fs.readFileSync('./config/config.json');
-    startupConfig = JSON.parse(fileContents).configValue;
+    var fileContents = fs.readFileSync('./configmap/configmap.json');
+    startupConfig = fileContents;
   } catch (err) {
     // Here you get the error when the file was not found,
     // but you also get any other error
@@ -97,7 +139,7 @@ app.listen(PORT, () => {
 
   try {
     var fileContents = fs.readFileSync('./secret/secret.json');
-    startupSecret = JSON.parse(fileContents).secretValue;
+    startupSecret = fileContents;
   } catch (err) {
     // Here you get the error when the file was not found,
     // but you also get any other error
