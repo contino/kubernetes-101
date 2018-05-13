@@ -39,7 +39,7 @@ app.get('/', function (req, res) {
 
     var runtimeConfig;
     try {
-      var fileContents = fs.readFileSync('./configmap/configmap.json');
+      var fileContents = fs.readFileSync('/tmp/configmap/configmap.json');
       runtimeConfig = fileContents;
     } catch (err) {
       // Here you get the error when the file was not found,
@@ -48,7 +48,7 @@ app.get('/', function (req, res) {
 
     var runtimeSecret;
     try {
-      var fileContents = fs.readFileSync('./secret/secret.json');
+      var fileContents = fs.readFileSync('/tmp/secret/secret.json');
       runtimeSecret = fileContents;
     } catch (err) {
       // Here you get the error when the file was not found,
@@ -130,7 +130,7 @@ app.listen(PORT, () => {
   }  
 
   try {
-    var fileContents = fs.readFileSync('./configmap/configmap.json');
+    var fileContents = fs.readFileSync('/tmp/configmap/configmap.json');
     startupConfig = fileContents;
   } catch (err) {
     // Here you get the error when the file was not found,
@@ -138,7 +138,7 @@ app.listen(PORT, () => {
   }
 
   try {
-    var fileContents = fs.readFileSync('./secret/secret.json');
+    var fileContents = fs.readFileSync('/tmp/secret/secret.json');
     startupSecret = fileContents;
   } catch (err) {
     // Here you get the error when the file was not found,
