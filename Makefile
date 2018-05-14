@@ -85,7 +85,7 @@ demo-1:
 demo-2:
 	kubectl get services
 	kubectl apply -f ./kubernetes/2-service.yml
-	sleep 5
+	timeout 5
 	kubectl get services
 	curl http://localhost:$(PROXY-PORT)/
 
@@ -94,7 +94,7 @@ demo-3:
 	kubectl get pods
 	curl http://localhost:$(PROXY-PORT)/
 	curl http://localhost:$(PROXY-PORT)/kill
-	sleep 12
+	timeout 12
 	kubectl get pods
 
 #Health check failing. Container gets recreated.
