@@ -64,7 +64,7 @@ build-all: build-0 build-1 build-2
 
 #Cleanup any leftovers so we can try demo again
 demo-cleanup:
-	kubectl delete deployments -l app=hello-world-kubernetes-deployment --now
+	kubectl delete deployments -l app=hello-world-kubernetes-deployment -l name=hello-world-kubernetes-deployment --now
 	kubectl delete services -l name=hello-world-kubernetes-service --now
 	kubectl delete secret -l name=hello-world-kubernetes-secret --now
 	kubectl delete configmap -l name=hello-world-kubernetes-configmap --now
@@ -92,16 +92,14 @@ demo-2:
 #Health check failing. Container gets recreated.
 demo-3:
 	kubectl get pods
-	curl http://localhost:$(PROXY-PORT)/
 	curl http://localhost:$(PROXY-PORT)/kill
-	timeout 12
+	timeout 15
 	kubectl get pods
 
 #Health check failing. Container gets recreated.
 demo-4:
 	kubectl get pods
-	curl http://localhost:$(PROXY-PORT)/
-	curl http://localhost:$(PROXY-PORT)/big-leak
+	-curl http://localhost:$(PROXY-PORT)/big-leak 
 	timeout 5
 	kubectl get pods
 
@@ -110,7 +108,7 @@ demo-5:
 	kubectl get deployments
 	curl http://localhost:$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/5-new-version-faulty.yml
-	timeout 12
+	timeout 15
 	kubectl get deployments
 	curl http://localhost:$(PROXY-PORT)/
 	
@@ -119,7 +117,7 @@ demo-6:
 	kubectl get deployments
 	curl http://localhost:$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/6-new-version-good.yml
-	timeout 12
+	timeout 15
 	kubectl get deployments
 	curl http://localhost:$(PROXY-PORT)/
 
@@ -127,22 +125,27 @@ demo-6:
 demo-7:
 	curl http://localhost:$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/7-env-explicit.yml
-	timeout 12
+	timeout 15
 	curl http://localhost:$(PROXY-PORT)/
 
 #Spin up the Pod overridding env variables pointing to configmap and secrets. Also configure configmap and secrets as volume mounts
 demo-8:
 	curl http://localhost:$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/8-configmaps-and-secrets.yml
-	timeout 12
+	timeout 15
 	curl http://localhost:$(PROXY-PORT)/
 
 #Change configmap and secret which shows runtime configuration
 demo-9:
 	curl http://localhost:$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/9-configmaps-and-secrets-runtime-configuration.yml
-	timeout 12
-	curl http://localhost:$(PROXY-PORT)/	
+	timeout 15
+	-curl http://localhost:$(PROXY-PORT)/
+	timeout 15
+	-curl http://localhost:$(PROXY-PORT)/
+	timeout 15
+	-curl http://localhost:$(PROXY-PORT)/	
+	
 
 
 .PHONY: install build run test clean

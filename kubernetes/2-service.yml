@@ -31,7 +31,7 @@ spec:
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 2
-          periodSeconds: 10
+          periodSeconds: 5
           timeoutSeconds: 2
         readinessProbe:
           exec:

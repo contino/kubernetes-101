@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: hello-world-kubernetes-deployment
   labels:
-    app: hello-world-kubernetes-deployment
+    name: hello-world-kubernetes-deployment
 spec:
   selector:
     matchLabels:
