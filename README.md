@@ -13,7 +13,7 @@ Download and install the pre-requisites
 - Node
 - Make
 
-> Note: if you're using minikube and you want to reuse docker daemon from the vm created by minube avoiding to push images to registries do the following: 
+> Note: if you're using minikube on mac or linux host and you want to reuse docker daemon from the vm created by minikube avoiding to push images to registries do the following: 
 >
 >```eval $(minikube docker-env)```
 >
