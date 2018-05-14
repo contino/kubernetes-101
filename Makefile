@@ -5,7 +5,6 @@ PROXY-PORT ?= 32500
 VERSION-0 ?= 1.0.0
 VERSION-1 ?= 1.0.1
 VERSION-2 ?= 1.0.2
-MINIKUBE-IP=`minikube ip`
 
 install:
 	npm install
@@ -75,10 +74,10 @@ demo-1:
 	kubectl get pods
 	kubectl get deployments
 	kubectl apply -f ./kubernetes/1-deployment.yml
-	sleep 5
+	timeout 5
 	kubectl get pods
 	kubectl get deployments
-	sleep 8
+	timeout 5
 	kubectl get pods
 	kubectl get deployments
 
@@ -88,17 +87,14 @@ demo-2:
 	kubectl apply -f ./kubernetes/2-service.yml
 	sleep 5
 	kubectl get services
-	curl http://$(minikube ip):$(PROXY-PORT)/
-#	curl http://localhost:$(PROXY-PORT)/
+	curl http://localhost:$(PROXY-PORT)/
 
 #Health check failing. Container gets recreated.
 demo-3:
 	kubectl get pods
-	curl http://$(MINIKUBE-IP):$(PROXY-PORT)/
-	curl http://$(MINIKUBE-IP):$(PROXY-PORT)/kill
-#	curl http://localhost:$(PROXY-PORT)/
-#	curl http://localhost:$(PROXY-PORT)/kill
-#	sleep 12
+	curl http://localhost:$(PROXY-PORT)/
+	curl http://localhost:$(PROXY-PORT)/kill
+	sleep 12
 	kubectl get pods
 
 #Health check failing. Container gets recreated.
