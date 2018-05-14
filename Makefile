@@ -5,6 +5,7 @@ PROXY-PORT ?= 32500
 VERSION-0 ?= 1.0.0
 VERSION-1 ?= 1.0.1
 VERSION-2 ?= 1.0.2
+MINIKUBE-IP=`minikube ip`
 
 install:
 	npm install
@@ -64,7 +65,7 @@ build-all: build-0 build-1 build-2
 
 #Cleanup any leftovers so we can try demo again
 demo-cleanup:
-	kubectl delete deployments -l app=hello-world-kubernetes-deployment --now
+	kubectl delete deployments -l name=hello-world-kubernetes-deployment --now
 	kubectl delete services -l name=hello-world-kubernetes-service --now
 	kubectl delete secret -l name=hello-world-kubernetes-secret --now
 	kubectl delete configmap -l name=hello-world-kubernetes-configmap --now
@@ -74,10 +75,10 @@ demo-1:
 	kubectl get pods
 	kubectl get deployments
 	kubectl apply -f ./kubernetes/1-deployment.yml
-	timeout 5
+	sleep 5
 	kubectl get pods
 	kubectl get deployments
-	timeout 5
+	sleep 8
 	kubectl get pods
 	kubectl get deployments
 
@@ -85,16 +86,19 @@ demo-1:
 demo-2:
 	kubectl get services
 	kubectl apply -f ./kubernetes/2-service.yml
-	timeout 5
+	sleep 5
 	kubectl get services
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(minikube ip):$(PROXY-PORT)/
+#	curl http://localhost:$(PROXY-PORT)/
 
 #Health check failing. Container gets recreated.
 demo-3:
 	kubectl get pods
-	curl http://localhost:$(PROXY-PORT)/
-	curl http://localhost:$(PROXY-PORT)/kill
-	timeout 12
+	curl http://$(MINIKUBE-IP):$(PROXY-PORT)/
+	curl http://$(MINIKUBE-IP):$(PROXY-PORT)/kill
+#	curl http://localhost:$(PROXY-PORT)/
+#	curl http://localhost:$(PROXY-PORT)/kill
+#	sleep 12
 	kubectl get pods
 
 #Health check failing. Container gets recreated.

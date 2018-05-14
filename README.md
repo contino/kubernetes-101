@@ -13,6 +13,12 @@ Download and install the pre-requisites
 - Node
 - Make
 
+> Note: if you're using minikube and you want to reuse docker daemon from the vm created by minube avoiding to push images to registries do the following: 
+>
+>```eval $(minikube docker-env)```
+>
+>Further info [here](https://github.com/kubernetes/minikube/blob/0c616a6b42b28a1aab8397f5a9061f8ebbd9f3d9/README.md#reusing-the-docker-daemon)
+
 ## Demo
 
 It is assumed that we are running a local Kubernetes cluster. This is why the loadbalancer type is set to `NodePort` instead of `Loadbalancer`.
