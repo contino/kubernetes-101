@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: hello-world-kubernetes-deployment
   labels:
-    name: hello-world-kubernetes-deployment  
+    app: hello-world-kubernetes-deployment
 spec:
   selector:
     matchLabels:
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: hello-world-kubernetes-pod
-        image: hello-world-kubernetes:1.0.0
+        image: hello-world-kubernetes:1.0.2
         ports:
         - name: http
           containerPort: 8080
@@ -47,3 +47,22 @@ spec:
           requests:
             memory: "32Mi"
             cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-kubernetes-service
+  labels:
+    name: hello-world-kubernetes-service
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 32500
+    nodePort: 32500
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: hello-world-kubernetes
+
+  

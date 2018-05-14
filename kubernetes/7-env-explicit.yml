@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: hello-world-kubernetes-deployment
   labels:
-    name: hello-world-kubernetes-deployment  
+    name: hello-world-kubernetes-deployment    
 spec:
   selector:
     matchLabels:
@@ -13,7 +13,7 @@ spec:
     rollingUpdate:
       maxSurge: 3
       maxUnavailable: 1
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: hello-world-kubernetes-pod
-        image: hello-world-kubernetes:1.0.0
+        image: hello-world-kubernetes:1.0.2
         ports:
         - name: http
           containerPort: 8080
@@ -46,4 +46,28 @@ spec:
             cpu: "500m"
           requests:
             memory: "32Mi"
-            cpu: "250m"
+            cpu: "250m"          
+        env:
+        - name: ENV_CONFIG
+          value: 2nd env config
+        - name: ENV_SECRET
+          value: 2nd env secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-kubernetes-service
+  labels:
+    name: hello-world-kubernetes-service
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 32500
+    nodePort: 32500
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: hello-world-kubernetes
+
+  

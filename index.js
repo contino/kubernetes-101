@@ -31,7 +31,7 @@ function formatBytes(bytes,decimals) {
 }
 
 app.get('/', function (req, res) {
-  if (packageVersion == '1.0.1' || hasFailure) {
+  if (hasFailure) {
     res.sendStatus(500);
   } else {
     var envConfig = process.env.ENV_CONFIG;
@@ -100,7 +100,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/kill', function (req, res) {
-  if (packageVersion == '1.0.1' || hasFailure) {
+  if (hasFailure) {
     res.sendStatus(500);
   } else {
     hasFailure=true;
@@ -110,7 +110,7 @@ app.get('/kill', function (req, res) {
 });
 
 app.get('/small-leak', function (req, res) {
-  if (packageVersion == '1.0.1' || hasFailure) {
+  if (hasFailure) {
     res.sendStatus(500);
   } else {
     largeMemoryChunk=(new Array(67108864)).join('*');
@@ -120,7 +120,7 @@ app.get('/small-leak', function (req, res) {
 });
 
 app.get('/big-leak', function (req, res) {
-  if (packageVersion == '1.0.1' || hasFailure) {
+  if (hasFailure) {
     res.sendStatus(500);
   } else {
     largeMemoryChunk=(new Array(100663296)).join('*');
@@ -131,7 +131,7 @@ app.get('/big-leak', function (req, res) {
 
 // health check
 app.get('/healthz', (req, res, next) => {
-  if (packageVersion == '1.0.1' || hasFailure) {
+  if (hasFailure) {
     res.sendStatus(500);
   } else {
     res.sendStatus(200);
@@ -165,9 +165,13 @@ app.listen(PORT, () => {
   }
 
   setTimeout(function() {
-    fs.writeFile('/tmp/ready', 'alive!', 'utf8', function (err) {
-      logger.info(`App is ready after delay of ${READINESS_TIMEOUT}ms!`);
-    });
+    if (packageVersion == '1.0.1' || hasFailure) {
+      logger.info(`Dodgy version 1.0.1 so not ready!`);
+    } else {
+      fs.writeFile('/tmp/ready', 'alive!', 'utf8', function (err) {
+        logger.info(`App is ready after delay of ${READINESS_TIMEOUT}ms!`);
+      });
+    }
   }, READINESS_TIMEOUT);
 
   logger.info(`Example app listening on port ${PORT}!`);

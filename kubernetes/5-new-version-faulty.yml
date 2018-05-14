@@ -2,11 +2,18 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: hello-world-kubernetes-deployment
+  labels:
+    name: hello-world-kubernetes-deployment  
 spec:
   selector:
     matchLabels:
       app: hello-world-kubernetes
-  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 1
+  replicas: 3
   template:
     metadata:
       labels:
@@ -14,7 +21,7 @@ spec:
     spec:
       containers:
       - name: hello-world-kubernetes-pod
-        image: hello-world-kubernetes:1.0.0
+        image: hello-world-kubernetes:1.0.1
         ports:
         - name: http
           containerPort: 8080
@@ -23,15 +30,15 @@ spec:
             path: /healthz
             port: 8080
             scheme: HTTP
-          initialDelaySeconds: 5
-          periodSeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: 2
+          periodSeconds: 10
+          timeoutSeconds: 2
         readinessProbe:
           exec:
             command:
             - /bin/ls 
             - /tmp/ready
-          initialDelaySeconds: 5
+          initialDelaySeconds: 2
           timeoutSeconds: 1
         resources:
           limits:
@@ -39,19 +46,14 @@ spec:
             cpu: "500m"
           requests:
             memory: "32Mi"
-            cpu: "250m"          
-        env:
-        - name: ENV_CONFIG
-          value: 2nd env config
-        - name: ENV_SECRET
-          value: 2nd env secret
+            cpu: "250m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: hello-world-kubernetes
   name: hello-world-kubernetes-service
+  labels:
+    name: hello-world-kubernetes-service
 spec:
   type: NodePort
   ports:

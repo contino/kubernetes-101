@@ -15,6 +15,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
+It is assumed that we are running a local Kubernetes cluster. This is why the loadbalancer type is set to `NodePort` instead of `Loadbalancer`.
+
 Ensure that container builds and works.
 ```
 make start
@@ -27,27 +29,52 @@ Build the three versions of the container for the demos.
 make build-all
 ```
 
-Demo 1 - Spin up a Kubernetes Pod 
+Demo 1 - Spin up a Kubernetes Pod with a deployment
 ```
 make demo-1
 ```
 
-Demo 2 - Make container available via Kubernetes service
+Demo 2 - Make Kuberentes pod available via Kubernetes service
 ```
 make demo-2
-make test
 ```
 
-Demo 3 - Override container ENV variables with explicit values
+Demo 3 - Health check failing. Container gets recreated.
 ```
+make demo-2
 make demo-3
-make test
 ```
 
-Demo 4 - Override container ENV variables with configmap and secret values. Expose configmap and secrets via Kubernetes volume.
+Demo 4 - Maximum memory exceeded. Container gets recreated.
 ```
+make demo-2
 make demo-4
-make test
+```
+
+Demo 5 - Deploy a faulty container & have no downtime
+```
+make demo-5
+```
+
+Demo 5 - Deploy a fixed container & have no downtime
+```
+make demo-6
+```
+
+Demo 7 - Override container ENV variables with explicit values
+```
+make demo-7
+```
+
+Demo 8 - Spin up the Pod overridding env variables pointing to configmap and secrets. Also configure configmap and secrets as volume mounts
+```
+make demo-8
+```
+
+Demo 9 - Change configmap and secret which shows runtime configuration.
+```
+make demo-8
+make demo-9
 ```
 
 ## Contributing
