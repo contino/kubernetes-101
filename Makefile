@@ -5,6 +5,7 @@ PROXY-PORT ?= 32500
 VERSION-0 ?= 1.0.0
 VERSION-1 ?= 1.0.1
 VERSION-2 ?= 1.0.2
+HOST ?= localhost
 
 install:
 	npm install
@@ -28,19 +29,19 @@ stop:
 	docker stop $(INSTANCE) && docker rm $(INSTANCE)
 
 test:
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 
 test-health:
-	curl http://localhost:$(PROXY-PORT)/healthz
+	curl http://$(HOST):$(PROXY-PORT)/healthz
 
 test-kill:
-	curl http://localhost:$(PROXY-PORT)/kill
+	curl http://$(HOST):$(PROXY-PORT)/kill
 
 test-small-leak:
-	curl http://localhost:$(PROXY-PORT)/small-leak
+	curl http://$(HOST):$(PROXY-PORT)/small-leak
 
 test-big-leak:
-	curl http://localhost:$(PROXY-PORT)/big-leak
+	curl http://$(HOST):$(PROXY-PORT)/big-leak
 
 clean:
 	rm -rf node_modules
@@ -74,10 +75,10 @@ demo-1:
 	kubectl get pods
 	kubectl get deployments
 	kubectl apply -f ./kubernetes/1-deployment.yml
-	timeout 5
+	sleep 5
 	kubectl get pods
 	kubectl get deployments
-	timeout 5
+	sleep 5
 	kubectl get pods
 	kubectl get deployments
 
@@ -85,66 +86,66 @@ demo-1:
 demo-2:
 	kubectl get services
 	kubectl apply -f ./kubernetes/2-service.yml
-	timeout 5
+	sleep 5
 	kubectl get services
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 
 #Health check failing. Container gets recreated.
 demo-3:
 	kubectl get pods
-	curl http://localhost:$(PROXY-PORT)/kill
-	timeout 15
+	curl http://$(HOST):$(PROXY-PORT)/kill
+	sleep 15
 	kubectl get pods
 
 #Health check failing. Container gets recreated.
 demo-4:
 	kubectl get pods
-	-curl http://localhost:$(PROXY-PORT)/big-leak 
-	timeout 5
+	-curl http://$(HOST):$(PROXY-PORT)/big-leak 
+	sleep 5
 	kubectl get pods
 
 #Deploy dodgy container
 demo-5:
 	kubectl get deployments
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/5-new-version-faulty.yml
-	timeout 15
+	sleep 15
 	kubectl get deployments
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 	
 #Deploy fixed version
 demo-6:
 	kubectl get deployments
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/6-new-version-good.yml
-	timeout 15
+	sleep 15
 	kubectl get deployments
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 
 #Spin up the Pod overridding env variables explicitly
 demo-7:
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/7-env-explicit.yml
-	timeout 15
-	curl http://localhost:$(PROXY-PORT)/
+	sleep 15
+	curl http://$(HOST):$(PROXY-PORT)/
 
 #Spin up the Pod overridding env variables pointing to configmap and secrets. Also configure configmap and secrets as volume mounts
 demo-8:
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/8-configmaps-and-secrets.yml
-	timeout 15
-	curl http://localhost:$(PROXY-PORT)/
+	sleep 15
+	curl http://$(HOST):$(PROXY-PORT)/
 
 #Change configmap and secret which shows runtime configuration
 demo-9:
-	curl http://localhost:$(PROXY-PORT)/
+	curl http://$(HOST):$(PROXY-PORT)/
 	kubectl apply -f ./kubernetes/9-configmaps-and-secrets-runtime-configuration.yml
-	timeout 15
-	-curl http://localhost:$(PROXY-PORT)/
-	timeout 15
-	-curl http://localhost:$(PROXY-PORT)/
-	timeout 15
-	-curl http://localhost:$(PROXY-PORT)/	
+	sleep 15
+	-curl http://$(HOST):$(PROXY-PORT)/
+	sleep 15
+	-curl http://$(HOST):$(PROXY-PORT)/
+	sleep 15
+	-curl http://$(HOST):$(PROXY-PORT)/	
 	
 
 

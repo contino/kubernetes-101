@@ -6,12 +6,22 @@ This project will demonstrate the basic features of Kubernetes.
 
 Download and install the pre-requisites
 
-### Prerequisites
+### Windows
 
-- Docker
-- Kubernetes
-- Node
-- Make
+Docker for Windows Edge Version with Kubernetes turned on (or Docker Toolbox + Minikube + Kubectl is installed).
+Kubectl is available on the path. e.g. `path=%path%;C:\Program Files\Docker\Docker\Resources\bin\`
+Node is installed and is added to the path. e.g. `path=%path%;C:\Program Files (x86)\nodejs\`
+Make is installed and is added to the path. e.g. `path=%path%;C:\Program Files (x86)\GnuWin32\bin`
+Tools like `sleep` are added to the path. e.g. `path=%path%;C:\Program Files\Git\usr\bin`
+
+### Mac
+
+Docker for Mac edge version with Kubernetes turned on.
+Node is installed and is added to the path.
+Make is installed and is added to the path. 
+Tools like `sleep` are added to the path.
+
+### Prerequisites
 
 ## Demo
 
