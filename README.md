@@ -25,6 +25,8 @@ Tools like `sleep` are added to the path.
 
 ## Demo
 
+[![Watch the demo](/demo/Kubernetes-101_First_Frame.png?raw=true)](/demo/Kubernetes-101.mp4?raw=true)
+
 It is assumed that we are running a local Kubernetes cluster. This is why the loadbalancer type is set to `NodePort` instead of `Loadbalancer`.
 
 Ensure that container builds and works.
