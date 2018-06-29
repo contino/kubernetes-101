@@ -125,6 +125,10 @@ Outcome: Runtime config has changed, without having to restart the container. Th
 * Start time configmap is `3rd env config` and secret is `3rd env secret`.
 * Run time configmap is `4th env config` and secret is `4th env secret`.
 
+## Presentation
+
+[![Presentation](/presentation/kubernetes-101.jpg?raw=true)](http://nbviewer.jupyter.org/github/contino/kubernetes-101/blob/master/presentation/kubernetes-101.pdf)
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](https://github.com/contino/kubernetes-101) for details on our code of conduct, and the process for submitting pull requests to us.
